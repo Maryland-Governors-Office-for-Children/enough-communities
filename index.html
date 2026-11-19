@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>ENOUGH Communities Impact Map | Maryland Governor’s Office for Children</title>
+<title>ENOUGH Communities Map | Maryland Governor’s Office for Children</title>
 <meta name="description" content="Explore the 30 communities across Maryland working to reduce childhood poverty through Maryland’s ENOUGH Initiative.">
 <link rel="canonical" href="https://maryland-governors-office-for-children.github.io/enough-communities/">
 <meta property="og:type" content="website">
@@ -18,14 +18,14 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@MD_GOC">
 <link rel="icon" type="image/png" href="logo.png">
-<link rel="preload" href="fonts/montserrat-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="fonts/montserrat-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/source-serif-4-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/source-serif-4-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
 <style>
-  /* Montserrat (SIL Open Font License, see fonts/OFL.txt), served from this site so visitors make no third-party requests */
-  @font-face{font-family:"Montserrat";font-style:normal;font-weight:400;font-display:swap;src:url(fonts/montserrat-latin-400-normal.woff2) format("woff2")}
-  @font-face{font-family:"Montserrat";font-style:normal;font-weight:500;font-display:swap;src:url(fonts/montserrat-latin-500-normal.woff2) format("woff2")}
-  @font-face{font-family:"Montserrat";font-style:normal;font-weight:600;font-display:swap;src:url(fonts/montserrat-latin-600-normal.woff2) format("woff2")}
-  @font-face{font-family:"Montserrat";font-style:normal;font-weight:700;font-display:swap;src:url(fonts/montserrat-latin-700-normal.woff2) format("woff2")}
+  /* Source Serif 4 (SIL Open Font License, see fonts/OFL.txt), served from this site so visitors make no third-party requests */
+  @font-face{font-family:"Source Serif 4";font-style:normal;font-weight:400;font-display:swap;src:url(fonts/source-serif-4-latin-400-normal.woff2) format("woff2")}
+  @font-face{font-family:"Source Serif 4";font-style:normal;font-weight:500;font-display:swap;src:url(fonts/source-serif-4-latin-500-normal.woff2) format("woff2")}
+  @font-face{font-family:"Source Serif 4";font-style:normal;font-weight:600;font-display:swap;src:url(fonts/source-serif-4-latin-600-normal.woff2) format("woff2")}
+  @font-face{font-family:"Source Serif 4";font-style:normal;font-weight:700;font-display:swap;src:url(fonts/source-serif-4-latin-700-normal.woff2) format("woff2")}
 
   /* Brand tokens, from the ENOUGH Initiative Style Guide */
   :root{
@@ -40,8 +40,7 @@
     --rule:#D5D5E3;
     /* darker gold for text on white, so it meets WCAG AA contrast */
     --gold-text:#6B6B3D;
-    /* Graphie is the brand face; Montserrat is the closest free geometric stand-in on the web */
-    --font:"Graphie","Montserrat","Avenir Next","Segoe UI",system-ui,-apple-system,Arial,sans-serif;
+    --font:"Source Serif 4",Georgia,"Times New Roman",serif;
   }
   *{box-sizing:border-box}
   html{scroll-behavior:smooth}
@@ -72,18 +71,18 @@
 
   /* At-a-glance figures */
   .stats{max-width:1240px;margin:0 auto;padding:0 24px}
-  .stats ul{list-style:none;margin:-44px 0 0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));background:var(--white);border-top:4px solid var(--gold);box-shadow:0 14px 34px rgba(0,0,51,.12);position:relative}
+  .stats ul{list-style:none;margin:-44px 0 0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));background:var(--white);border-top:4px solid var(--gold);box-shadow:0 14px 34px rgba(0,0,51,.12);position:relative}
   .stats li{padding:22px 24px 20px;border-left:1px solid var(--rule)}
   .stats li:first-child{border-left:0}
   .stats .n{display:block;font-weight:700;font-size:clamp(28px,3.2vw,40px);line-height:1.05;color:var(--navy);letter-spacing:-.01em;font-variant-numeric:tabular-nums}
   .stats .l{display:block;font-size:15px;color:var(--navy-deep);margin-top:6px}
   .stats .src{max-width:none;margin:10px 0 0;font-size:13px;color:var(--muted)}
   .stats .src a{color:var(--navy)}
-  @media (max-width:860px){.stats ul{grid-template-columns:repeat(2,minmax(0,1fr))}.stats li:nth-child(3){border-left:0}.stats li:nth-child(n+3){border-top:1px solid var(--rule)}}
+  @media (max-width:560px){.stats ul{grid-template-columns:1fr}.stats li{border-left:0}.stats li+li{border-top:1px solid var(--rule)}}
 
   /* Map section */
   .map-section{max-width:1240px;margin:0 auto;padding:56px 24px 24px}
-  .map-section h2,.list-section h2,.stories h2,.about h2{font-weight:700;font-size:clamp(26px,3vw,36px);line-height:1.15;margin:0 0 10px;color:var(--navy)}
+  .map-section h2,.list-section h2,.about h2{font-weight:700;font-size:clamp(26px,3vw,36px);line-height:1.15;margin:0 0 10px;color:var(--navy)}
   .map-section .lede{max-width:44em;margin:0 0 22px;color:var(--navy-deep)}
   .legend{display:flex;flex-wrap:wrap;gap:12px 32px;margin:0 0 18px;padding:0;list-style:none;font-size:15px}
   .legend li{display:flex;align-items:center;gap:10px}
@@ -146,28 +145,6 @@
   .lab:focus-visible text{text-decoration:underline}
   .inset .note{font-family:var(--font);font-size:12px;fill:var(--muted)}
 
-  /* Featured community stories */
-  .stories{max-width:1240px;margin:0 auto;padding:48px 24px 8px}
-  .stories .lede{max-width:44em;margin:0 0 24px;color:var(--navy-deep)}
-  .cards{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:24px}
-  @media (max-width:420px){.cards{grid-template-columns:1fr}}
-  .card{display:flex;flex-direction:column;border:1px solid var(--rule);border-radius:4px;overflow:hidden;background:var(--white)}
-  .card .head{background:var(--navy);color:var(--white);padding:18px 22px 16px;border-bottom:4px solid var(--gold)}
-  .card .county-tag{display:block;font-size:13px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;opacity:.8;margin:0 0 6px}
-  .card h3{font-weight:700;font-size:22px;line-height:1.15;margin:0 0 6px}
-  .card .org{margin:0;font-weight:600;font-size:16px;line-height:1.3}
-  .card .org a{color:var(--gold);text-decoration-thickness:2px;text-underline-offset:3px}
-  .card .org a:hover{color:var(--white)}
-  .card .figs{display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid var(--rule)}
-  .card .figs div{padding:14px 22px}
-  .card .figs div+div{border-left:1px solid var(--rule)}
-  .card .figs .n{display:block;white-space:nowrap;font-weight:700;font-size:21px;line-height:1.1;color:var(--navy);font-variant-numeric:tabular-nums}
-  .card .figs .l{display:block;font-size:13px;color:var(--muted);margin-top:4px;line-height:1.35}
-  .card .body{padding:16px 22px 20px;font-size:15px;flex:1;display:flex;flex-direction:column}
-  .card .body p{margin:0 0 12px}
-  .card .strat strong{color:var(--navy)}
-  .card .show{margin-top:auto;align-self:flex-start;font:inherit;font-weight:700;font-size:15px;color:var(--navy);background:none;border:2px solid var(--navy);border-radius:2px;padding:8px 16px;cursor:pointer}
-  .card .show:hover{background:var(--navy);color:var(--white)}
 
   /* Community list */
   .list-section{max-width:1240px;margin:0 auto;padding:40px 24px 72px}
@@ -242,7 +219,7 @@
     html{scroll-behavior:auto}
     .js .hero-text>*,.js .logo-panel,.js .stats ul,.js .map-ready .dot .pt{animation:none}
   }
-  @media print{.tip,.hero-nav,.skip,.card .show,.grid .more,.filter{display:none!important}.hero{background:none;color:var(--navy-deep)}.stats ul{margin-top:0;box-shadow:none}}
+  @media print{.tip,.hero-nav,.skip,.grid .more,.filter{display:none!important}.hero{background:none;color:var(--navy-deep)}.stats ul{margin-top:0;box-shadow:none}}
 </style>
 <script>document.documentElement.classList.add("js");</script>
 </head>
@@ -252,13 +229,13 @@
 <section class="hero" aria-labelledby="hero-title">
   <svg class="dots" id="hero-dots" aria-hidden="true" preserveAspectRatio="xMaxYMid slice"></svg>
   <div class="inner">
-    <nav class="hero-nav" aria-label="Primary"><a href="#impact-map">Map</a><a href="#stories">Community progress</a><a href="#communities">All communities</a><a href="https://children.maryland.gov/enough">children.maryland.gov/enough</a></nav>
+    <nav class="hero-nav" aria-label="Primary"><a href="#map">Map</a><a href="#communities">All communities</a><a href="https://children.maryland.gov/enough">children.maryland.gov/enough</a></nav>
     <div class="hero-grid">
     <div class="hero-text">
     <h1 id="hero-title"><span data-count-word>Thirty</span> Maryland communities are leading the work to reduce child poverty</h1>
     <p>Maryland’s ENOUGH Initiative aims to reduce childhood poverty in the state through community-led solutions that create thriving families and communities.</p>
     <p class="tagline">Centering community, driving opportunity for a stronger Maryland.</p>
-    <a class="btn" href="#impact-map">View the impact map</a>
+    <a class="btn" href="#map">View the map</a>
     </div>
     <a class="logo-panel" href="https://children.maryland.gov/enough" aria-label="ENOUGH Initiative, Maryland Governor’s Office for Children"><img class="logo" src="logo.png" alt="ENOUGH Initiative, Maryland Governor’s Office for Children" width="268" height="243"></a>
     </div>
@@ -268,10 +245,10 @@
 <main>
 <section class="stats" aria-label="ENOUGH at a glance">
   <ul id="stats"></ul>
-  <p class="src">Funding through fiscal year 2027. <a href="#about">About the data</a></p>
+  <p class="src"><a href="#about">About the data</a></p>
 </section>
 
-<section class="map-section" id="impact-map" aria-labelledby="map-title">
+<section class="map-section" id="map" aria-labelledby="map-title">
   <h2 id="map-title">Where ENOUGH communities are located</h2>
   <p class="lede" id="map-lede"></p>
   <ul class="legend" aria-label="Map key">
@@ -285,12 +262,6 @@
     <svg id="map-svg" aria-labelledby="map-title" aria-describedby="map-desc"><desc id="map-desc">Map of Maryland with a marker for each ENOUGH community. Each marker opens details. The same information is in the list of all communities below.</desc></svg>
   </div>
   <div class="insets" id="insets"></div>
-</section>
-
-<section class="stories" id="stories" aria-labelledby="stories-title">
-  <h2 id="stories-title">Community progress</h2>
-  <p class="lede">Communities further along in the ENOUGH Initiative are already putting their plans into action. Here is some of what they have done so far.</p>
-  <ul class="cards" id="cards"></ul>
 </section>
 
 <section class="list-section" id="communities" aria-labelledby="list-title">
@@ -393,7 +364,7 @@ var C=[
  {id:"suitland",name:"District Heights and Suitland",county:"Prince George’s County",url:"https://www.ucappgc.org/enough-initiative/",zone:"dc"},
  {id:"perkins",name:"Perkins Somerset Oldtown",county:"Baltimore City",url:"https://usi-inc.org/",zone:"bal"}
 ];
-/* Lead organization for each community (used in the list, pop-ups and story cards) */
+/* Lead organization for each community (used in the list and pop-ups) */
 var ORG={cherryhill:"Cherry Hill Strong",parkheights:"Park Heights Renaissance, Inc.",hagerstown:"San Mar Family & Community Services: Bester Community of Hope",riverdale:"Latin American Youth Center (Project ERASE Poverty)",pumphrey:"Anne Arundel County Partnership for Children, Youth, and Families",goldenmile:"Frederick County Division of Youth and Family Services",cambridge:"Moving Dorchester Forward, Inc.",longbranch:"CHEER (Community Health and Empowerment through Education and Research)",mv480:"480 Club",identity:"Identity, Inc.",edgewood:"Boys & Girls Clubs of Harford and Cecil Counties",aberdeen:"New-Service Training Employment Program (N-STEP), Inc.",federalsburg:"Caroline Human Services Council, Inc.",langley:"We Are CASA, Inc.",druid:"Child First Authority",cumberland:"City of Cumberland",essex:"Community Assistance Network, Inc.",dundalk:"Turnaround Inc.",sandtown:"Elev8 Baltimore, Inc.",landover:"Good Intentions Foundation Inc.",mondawmin:"Greater Mondawmin Coordinating Council",chestertown:"Kent County Local Management Board",belair:"Leader Breeders",waldorf:"LifeStyles of Maryland Foundation, Inc.",curtisbay:"South Baltimore Community Land Trust",mcelderry:"Tendea Family, Inc.",greenmount:"The Central Baltimore Partnership, Inc.",waverly:"The Y in Central Maryland",suitland:"United Communities Against Poverty (UCAP)",perkins:"Urban Strategies Inc."};
 /* ===================== END CONTENT ===================== */
 
@@ -419,7 +390,6 @@ var counties={}; C.forEach(function(c){counties[c.county]=1;});
 var countyNames=Object.keys(counties).sort(function(a,b){return a.localeCompare(b);});
 var nCounties=countyNames.filter(function(n){return n!=="Baltimore City";}).length;
 var hasCity=!!counties["Baltimore City"];
-var totalFunds=C.reduce(function(a,c){return a+c.funds;},0);
 var nTracts=STATS.unique_tracts;
 var where=nCounties+" counties"+(hasCity?" and Baltimore City":"");
 document.querySelectorAll("[data-count-word]").forEach(function(e){e.textContent=words(C.length);});
@@ -428,8 +398,7 @@ document.getElementById("map-lede").textContent="Every ENOUGH community is plott
 document.getElementById("stats").innerHTML=[
   [C.length,"ENOUGH communities"],
   [nTracts,"census tracts served"],
-  [nCounties+(hasCity?" + 1":""),hasCity?"counties and Baltimore City":"counties"],
-  [money(totalFunds).replace(" million","M"),"in ENOUGH grants awarded"]
+  [nCounties+(hasCity?" + 1":""),hasCity?"counties and Baltimore City":"counties"]
 ].map(function(s){return '<li><span class="n">'+esc(s[0])+'</span><span class="l">'+esc(s[1])+'</span></li>';}).join("");
 
 var NS="http://www.w3.org/2000/svg";
@@ -697,17 +666,6 @@ function showOnMap(c){
   (function tick(){var y=window.scrollY;if(y===last)still++;else{still=0;last=y;}if(still>=6||Date.now()-t0>1600)go();else requestAnimationFrame(tick);})();
 }
 
-/* ---------- STORY CARDS ---------- */
-var cards=document.getElementById("cards");
-C.filter(function(c){return c.feat;}).forEach(function(c){
-  var li=document.createElement("li"); li.className="card"; li.id="story-"+c.id;
-  li.innerHTML='<div class="head"><span class="county-tag">'+esc(c.county)+'</span><h3>'+esc(c.name)+'</h3><p class="org">'+link(c.url,orgLine(c))+'</p></div>'+
-    '<div class="figs"><div><span class="n">'+money(c.funds)+'</span><span class="l">awarded to date</span></div><div><span class="n">'+pct(c)+'</span><span class="l">of children living in poverty <sup><a href="#note-poverty" aria-label="About this figure">?</a></sup></span></div></div>'+
-    '<div class="body"><p class="strat"><strong>Core strategies:</strong> '+esc(c.strat)+'</p><p>'+esc(c.text)+'</p><button type="button" class="show">Show on map</button></div>';
-  li.querySelector(".show").addEventListener("click",function(e){e.stopPropagation();showOnMap(c);});
-  cards.appendChild(li);
-});
-
 /* ---------- LIST ---------- */
 var list=document.getElementById("community-list");
 var sel=document.getElementById("county-filter");
@@ -717,7 +675,7 @@ C.slice().sort(function(a,b){return a.name.localeCompare(b.name);}).forEach(func
   li.innerHTML=(c.url?link(c.url,c.name):'<span class="nolink">'+esc(c.name)+'</span>')+'<span class="org">'+esc(c.org)+'</span><span class="county">'+esc(c.county)+'</span>'+
     (c.feat?'<button type="button" class="more" data-story="'+c.id+'">Read their progress story</button>':'');
   var b=li.querySelector(".more");
-  if(b) b.addEventListener("click",function(){var card=document.getElementById("story-"+c.id);card.scrollIntoView({behavior:"smooth",block:"start"});card.querySelector(".show").focus({preventScroll:true});});
+  if(b) b.addEventListener("click",function(){showOnMap(c);});
   list.appendChild(li);
 });
 function applyFilter(){
