@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ENOUGH Communities Impact Map | Maryland Governor’s Office for Children</title>
+<meta name="description" content="Explore the 30 communities across Maryland working to reduce childhood poverty through Maryland’s ENOUGH Initiative.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  /* Brand tokens, from the ENOUGH Initiative Style Guide */
+  :root{
+    --navy-deep:#000033;
+    --navy:#202059;
+    --gold:#999966;
+    --white:#ffffff;
+    /* tints of the brand navy, used only for map land/water and muted text */
+    --land:#E3E3EC;
+    --water:#F6F6FA;
+    --muted:#55557F;
+    --rule:#D5D5E3;
+    /* Graphie is the brand face; Montserrat is the closest free geometric stand-in on the web */
+    --font:"Graphie","Montserrat","Avenir Next","Segoe UI",system-ui,-apple-system,Arial,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;font-family:var(--font);font-weight:400;color:var(--navy-deep);background:var(--white);line-height:1.55;-webkit-font-smoothing:antialiased}
+  a{color:inherit}
+  :focus-visible{outline:3px solid var(--gold);outline-offset:3px}
+
+  /* Hero */
+  .hero{position:relative;overflow:hidden;background:var(--navy);color:var(--white)}
+  .hero .dots{display:none;position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+  .hero .inner{position:relative;max-width:1200px;margin:0 auto;padding:24px 24px 80px}
+  .hero-nav{display:flex;justify-content:flex-end;gap:28px;margin-bottom:44px}
+  .hero-nav a{color:var(--white);font-weight:600;font-size:15px;text-decoration:none}
+  .hero-nav a:hover{text-decoration:underline;text-decoration-color:var(--gold);text-underline-offset:5px;text-decoration-thickness:2px}
+  .hero-grid{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:48px;align-items:center}
+  .logo-panel{display:block;padding:0 24px}
+  .logo{display:block;width:300px;max-width:100%;height:auto}
+  @media (max-width:860px){.hero-grid{grid-template-columns:1fr}.logo-panel{order:-1;justify-self:start;padding:0}.logo{width:200px}.hero-nav{margin-bottom:28px}}
+  .hero h1{font-weight:700;font-size:clamp(34px,5.2vw,60px);line-height:1.08;margin:0 0 22px;max-width:15em;letter-spacing:-.01em}
+  .hero p{font-size:clamp(17px,1.6vw,20px);max-width:36em;margin:0 0 14px}
+  .hero .tagline{color:var(--white);opacity:.82;font-size:16px;margin-bottom:34px}
+  .btn{display:inline-block;background:var(--gold);color:var(--navy-deep);font-weight:700;font-size:16px;padding:14px 26px;text-decoration:none;border-radius:2px;border:2px solid var(--gold)}
+  .btn:hover{background:var(--white);border-color:var(--white)}
+
+  /* Map section */
+  .map-section{max-width:1240px;margin:0 auto;padding:56px 24px 24px}
+  .map-section h2,.list-section h2{font-weight:700;font-size:clamp(26px,3vw,36px);line-height:1.15;margin:0 0 10px;color:var(--navy)}
+  .map-section .lede{max-width:44em;margin:0 0 22px;color:var(--navy-deep)}
+  .legend{display:flex;flex-wrap:wrap;gap:12px 32px;margin:0 0 18px;padding:0;list-style:none;font-size:15px}
+  .legend li{display:flex;align-items:center;gap:10px}
+  .legend .sw{display:inline-block;border-radius:50%;border:2px solid var(--white);box-shadow:0 0 0 1px var(--navy)}
+  .legend .sw.std{width:12px;height:12px;background:var(--navy)}
+  .legend .sw.ft{width:22px;height:22px;background:var(--gold);box-shadow:0 0 0 2px var(--navy-deep)}
+  .map-card{border:1px solid var(--rule);background:var(--water);border-radius:4px}
+  #map-svg{display:block;width:100%;height:auto}
+  .state{fill:var(--land);stroke:var(--navy);stroke-opacity:.55;stroke-width:1.4;stroke-linejoin:round;vector-effect:non-scaling-stroke}
+  .dc-shape{fill:var(--water);stroke:var(--navy);stroke-opacity:.45;stroke-width:1;stroke-dasharray:3 3;vector-effect:non-scaling-stroke}
+  .zone{fill:none;stroke:var(--navy);stroke-width:1.5;stroke-dasharray:5 4;vector-effect:non-scaling-stroke}
+  .zone-label{font-family:var(--font);font-weight:600;fill:var(--navy)}
+  .dot{cursor:pointer}
+  .dot .hit{fill:transparent}
+  .dot .pt{stroke:var(--white);stroke-width:1.6;fill:var(--navy);vector-effect:non-scaling-stroke}
+  .dot.ft .pt{fill:var(--gold);stroke:var(--navy-deep);stroke-width:2.4}
+  .dot.is-active .pt{stroke:var(--navy-deep);stroke-width:2.6}
+  .dot.ft.is-active .pt{stroke:var(--white);stroke-width:2.6;fill:var(--gold)}
+  .dot:focus{outline:none}
+  .dot:focus-visible .pt{stroke:var(--gold);stroke-width:3}
+
+  /* Zoom panels for dense areas */
+  .insets{display:grid;grid-template-columns:minmax(0,1fr);gap:24px;margin-top:24px}
+  .inset{border:1px solid var(--rule);background:var(--white);border-radius:4px;padding:18px 20px 14px;min-width:0}
+  .inset h3{font-weight:700;font-size:20px;color:var(--navy);margin:0 0 2px}
+  .inset .sub{margin:0 0 8px;font-size:14px;color:var(--muted)}
+  .inset .scroll{overflow-x:auto}
+  .inset svg{display:block;width:100%;max-width:980px;min-width:620px;height:auto;margin:0 auto}
+  .inset .bg{fill:var(--water)}
+  .lead{stroke:var(--navy);stroke-opacity:.4;stroke-width:1;fill:none;vector-effect:non-scaling-stroke}
+  .lead.is-active{stroke-opacity:1;stroke-width:1.6}
+  .lab{cursor:pointer}
+  .lab text{font-family:var(--font);font-size:13.5px;font-weight:500;fill:var(--navy-deep)}
+  .lab.ft text{font-weight:700}
+  .lab:hover text,.lab.is-active text{text-decoration:underline;text-decoration-color:var(--gold);text-decoration-thickness:2px;text-underline-offset:3px}
+  .lab:focus{outline:none}
+  .lab:focus-visible text{text-decoration:underline}
+  .inset .note{font-family:var(--font);font-size:12px;fill:var(--muted)}
+
+  /* Community list */
+  .list-section{max-width:1240px;margin:0 auto;padding:40px 24px 72px}
+  .list-section .lede{margin:0 0 24px;color:var(--muted)}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:0 36px;margin:0;padding:0;list-style:none;border-top:2px solid var(--navy)}
+  .grid li{padding:12px 0;border-bottom:1px solid var(--rule)}
+  .grid a{font-weight:600;color:var(--navy)}
+  .grid a:hover{text-decoration-color:var(--gold);text-decoration-thickness:2px;text-underline-offset:3px}
+  .grid .nolink{font-weight:600;color:var(--navy)}
+  .grid .org{display:block;font-size:14px;color:var(--navy-deep);margin-top:2px}
+  .grid .county{display:block;font-size:14px;color:var(--muted)}
+
+  footer{background:var(--navy-deep);color:var(--white);padding:36px 24px}
+  footer .inner{max-width:1200px;margin:0 auto;display:flex;flex-wrap:wrap;gap:12px 36px;align-items:center;justify-content:space-between;font-size:15px}
+  footer strong{font-weight:700}
+  footer a{color:var(--white);text-underline-offset:3px;text-decoration-color:var(--gold)}
+
+  /* Pop-ups */
+  .tip{position:fixed;z-index:50;display:none;background:var(--white);color:var(--navy-deep);box-shadow:0 10px 32px rgba(0,0,51,.28),0 0 0 1px rgba(32,32,89,.18);border-radius:3px;overflow:hidden}
+  .tip.small{padding:10px 14px;font-size:15px;font-weight:600;max-width:300px;border-left:5px solid var(--navy)}
+  .tip.small a{color:var(--navy);text-decoration-color:var(--gold);text-decoration-thickness:2px;text-underline-offset:3px}
+  .tip.large{width:min(420px,calc(100vw - 16px));max-height:calc(100vh - 16px);overflow:auto}
+  .tip .head{background:var(--navy);color:var(--white);padding:18px 22px 16px}
+  .tip .h1{font-weight:700;font-size:24px;line-height:1.15;margin:0 0 8px}
+  .tip .h2{font-weight:600;font-size:18px;line-height:1.3;margin:0}
+  .tip .h2 a{color:var(--gold);text-decoration-thickness:2px;text-underline-offset:3px}
+  .tip .h2 a:hover{color:var(--white)}
+  .tip .h3{font-weight:600;font-size:16px;line-height:1.3;margin:10px 0 0;color:var(--white);opacity:.92}
+  .tip .body{padding:16px 22px 20px;font-size:14.5px}
+  .tip .body p{margin:0 0 10px}
+  .tip .body p:last-child{margin-bottom:0}
+  .tip .body .facts strong{font-weight:700;color:var(--navy)}
+  .tip .body .story{padding-top:10px;border-top:1px solid var(--rule);font-weight:400}
+  .tip .close{display:none;position:absolute;top:8px;right:8px;width:36px;height:36px;border:0;border-radius:50%;background:rgba(255,255,255,.16);color:var(--white);font-size:22px;line-height:1;cursor:pointer}
+  .tip.small .close{color:var(--navy);background:transparent}
+  @media (max-width:700px){
+    .tip{left:8px!important;right:8px;top:auto!important;bottom:8px;width:auto!important;max-width:none!important}
+    .tip.large{max-height:72vh}
+    .tip .close{display:block}
+    .tip.small{padding-right:48px}
+  }
+  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+
+<section class="hero" aria-labelledby="hero-title">
+  <svg class="dots" id="hero-dots" aria-hidden="true" preserveAspectRatio="xMaxYMid slice"></svg>
+  <div class="inner">
+    <nav class="hero-nav" aria-label="Primary"><a href="#communities">All communities</a><a href="https://children.maryland.gov/enough">children.maryland.gov/enough</a></nav>
+    <div class="hero-grid">
+    <div class="hero-text">
+    <h1 id="hero-title">Thirty Maryland communities are leading the work to reduce child poverty</h1>
+    <p>Maryland’s ENOUGH Initiative aims to reduce childhood poverty in the state through community-led solutions that create thriving families and communities.</p>
+    <p class="tagline">Centering community, driving opportunity for a stronger Maryland.</p>
+    <a class="btn" href="#impact-map">View the impact map</a>
+    </div>
+    <a class="logo-panel" href="https://children.maryland.gov/enough" aria-label="ENOUGH Initiative, Maryland Governor’s Office for Children"><img class="logo" src="data:image/png;base64,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" alt="ENOUGH Initiative, Maryland Governor’s Office for Children" width="268" height="243"></a>
+    </div>
+  </div>
+</section>
+
+<main>
+<section class="map-section" id="impact-map" aria-labelledby="map-title">
+  <h2 id="map-title">Where ENOUGH communities are located</h2>
+  <p class="lede">Every ENOUGH community is plotted below across 13 counties and Baltimore City.</p>
+  <div class="map-card">
+    <svg id="map-svg" role="img" aria-label="Map of Maryland showing the 30 ENOUGH communities"></svg>
+  </div>
+
+</section>
+
+<section class="list-section" id="communities" aria-labelledby="list-title">
+  <h2 id="list-title">All 30 ENOUGH communities</h2>
+  <p class="lede">Each community is listed with its lead organization. Links go to the organization’s website.</p>
+  <ul class="grid" id="community-list"></ul>
+</section>
+</main>
+
+<footer>
+  <div class="inner">
+    <span><strong>ENOUGH Initiative</strong> | Maryland Governor’s Office for Children</span>
+    <span><a href="mailto:ENOUGH@maryland.gov">ENOUGH@maryland.gov</a> &nbsp;|&nbsp; <a href="https://children.maryland.gov/enough">children.maryland.gov/enough</a></span>
+  </div>
+</footer>
+
+<div class="tip" id="tip" role="dialog" aria-live="polite"></div>
+
+<script>
+(function(){
+"use strict";
+
+/* ---------- DATA ---------- */
+var URL_PHR="https://boldnewheights.org/enough-initiative/";
+var C=[
+ // featured (with progress pop-ups)
+ {id:"cherryhill",name:"Cherry Hill",county:"Baltimore City",lon:-76.6215,lat:39.2495,url:"https://cherryhillstrong.org/",feat:1,zone:"bal",
+  pop:{h1:"Cherry Hill, Baltimore City",h2:"Cherry Hill Strong",pov:"40% of children living in poverty",funds:"$11 million",
+   strat:"Reducing chronic absenteeism, combatting food insecurity, preventing evictions and keeping residents housed",
+   text:"Cherry Hill is a coalition of 13 partners led by Cherry Hill Strong. The community is focused on addressing school attendance, and has launched strategies to reduce absenteeism including transportation, individualized student counseling, and dedicated attendance staff. They’ve also used ENOUGH funding to start tutoring programs, workforce development initiatives, revitalize vacant spaces, and helped residents cover emergency expenses. Their work has helped prevent over 30 evictions and more than 20 utility shutoffs."}},
+ {id:"parkheights",name:"Park Heights",county:"Baltimore City",lon:-76.6665,lat:39.3445,url:URL_PHR,feat:1,zone:"bal",
+  pop:{h1:"Park Heights, Baltimore City",h2:"Park Heights Renaissance",pov:"31% of children living in poverty",funds:"$10 million",
+   strat:"Community revitalization and development, youth development and career opportunities, tutoring",
+   text:"In Park Heights, a coalition of 21 partners led by Park Heights Renaissance has used ENOUGH funding to revitalize vacant lots into parks and public community green spaces. They’ve conducted home repair assessments to keep residents housed and prevent vacancies."}},
+ {id:"hagerstown",name:"South End, Hagerstown",county:"Washington County",lon:-77.718,lat:39.629,url:"https://sanmarhope.org/",feat:1,
+  pop:{h1:"South End, Hagerstown",h2:"Bester Community of Hope/San Mar",pov:"48% of children living in poverty",funds:"$10.9 million",
+   strat:"Financial mobility and homeownership pathways, mental health resources, child care expansion, out-of-school time programs, post-secondary educational opportunities",
+   text:"In Hagerstown’s South End, a coalition of 44 partners led by San Mar Family & Community Services/Bester Community of Hope has used ENOUGH funding to hire a grief counselor for children and families who have lost a loved one to opioid use. They’ve opened a brand new child care center, eliminating a child care desert, and provided housing stabilization services that have helped dozens of families move from emergency to stable housing."}},
+ {id:"riverdale",name:"East Riverdale/Adelphi",county:"Prince George’s County",lon:-76.935,lat:38.970,url:"https://www.layc-dc.org/project-erase-poverty",feat:1,zone:"dc",
+  pop:{h1:"Riverdale/Adelphi",h2:"Latin American Youth Center (Project ERASE Poverty)",pov:"40% of children living in poverty",funds:"$2.8 million",
+   strat:"Entrepreneurship and workforce training, afterschool tutoring, large-scale fresh food distribution",
+   text:"In Riverdale/Adelphi, a coalition of 24 partners make up Project ERASE Poverty, led by the Latin American Youth Center. Using ENOUGH Initiative funding, their workforce development opportunities like doula training and culinary apprenticeships have provided career training and education to dozens. They’ve also stood up new tutoring programs and out-of-school time programs for hundreds of kids, and served thousands of families with fresh food distribution."}},
+ {id:"pumphrey",name:"Pumphrey/Brooklyn Park",county:"Anne Arundel County",lon:-76.617,lat:39.205,url:"https://www.aacounty.org/enough/brooklyn-parkpumphrey",feat:1,zone:"bal",
+  pop:{h1:"Brooklyn Park/Pumphrey",h2:"Anne Arundel County Partnership for Children, Youth, and Families",pov:"",funds:"$3.1 million",
+   strat:"Family financial coaching and savings programs, youth apprenticeship programs and tutoring, child care expansion, neighborhood beautification",
+   text:"In Brooklyn Park/Pumphrey, a coalition of 31 partners led by the Anne Arundel County Partnership for Children, Youth, and Families is using ENOUGH funding to help recruit and train new child care providers. They’ve also stood up a program to provide individualized financial coaching paired with direct financial assistance to families to increase economic mobility. Finally, they’ve invested in technical career pathways for young people, including training dozens of high school students in a hands-on auto mechanics program."}},
+ {id:"goldenmile",name:"Route 40/The Golden Mile",county:"Frederick County",lon:-77.450,lat:39.420,url:"https://frederickcountymd.gov/7959/Local-Management-Board",feat:1,
+  pop:{h1:"Route 40/Golden Mile, Frederick",h2:"Frederick County Division of Youth and Family Services",pov:"14% of children living in poverty",funds:"$1 million",
+   strat:"Fresh mobile food delivery, increasing workforce development training programs, expanding health care access",
+   text:"In the Route 40/Golden Mile neighborhood in Frederick, a coalition of 58 partners led by the Frederick County Division of Youth and Family Services has used ENOUGH funding to increase access to healthy, affordable produce. They’ve launched a “Veggie Van” that’s held nearly 100 mobile produce markets, providing fresh food to over 3,500 families. They’ve also given free flu vaccines to 500+ kids and eye exams to over 1,000 young students."}},
+ {id:"cambridge",name:"Cambridge and South Dorchester",county:"Dorchester County",lon:-76.078,lat:38.568,url:"https://mdforward.org",feat:1,
+  pop:{h1:"Cambridge/South Dorchester",h2:"Moving Dorchester Forward",pov:"54% of children living in poverty",funds:"$1 million",
+   strat:"Increasing quality out-of-school time programs, workforce development and career pathways, strengthening community schools",
+   text:"In Cambridge/South Dorchester, a coalition of 31 partners led by Moving Dorchester Forward is using ENOUGH funding to expand access to safe, supportive and enriching opportunities for youth during non-school hours. They are also funding workforce initiatives, increasing access to skills training and career readiness and employment opportunities for families."}},
+ {id:"longbranch",name:"Long Branch",county:"Montgomery County",lon:-77.003,lat:38.994,url:"https://www.communitycheer.org/longbranchthrives",feat:1,zone:"dc",
+  pop:{h1:"Long Branch",h2:"CHEER (Community Health and Empowerment through Education and Research) – Long Branch Thrives",pov:"23% of children living in poverty",funds:"$2 million",
+   strat:"Child care supply, benefit access, workforce development, health care access, housing stability",
+   text:"Long Branch Thrives, a coalition of 31 partners led by CHEER, is using ENOUGH funding to train ambassadors and community health workers to directly connect families to resources like pre-k, Head Start, Medicaid, and SNAP. To increase health care access, they’re also investing in mobile primary-care visits for residents. They’re also working to train and recruit new child care providers to increase access in the community."}},
+
+ // standard communities
+ {id:"mv480",name:"Montgomery Village",county:"Montgomery County",lon:-77.193,lat:39.173,url:"https://www.480club.com/",zone:"dc"},
+ {id:"identity",name:"Central Gaithersburg/Montgomery Village",county:"Montgomery County",lon:-77.205,lat:39.156,url:"https://enough-gmv.org/",zone:"dc"},
+ {id:"edgewood",name:"Edgewood",county:"Harford County",lon:-76.295,lat:39.419,url:"http://bgcharfordcecil.org/"},
+ {id:"aberdeen",name:"Aberdeen",county:"Harford County",lon:-76.164,lat:39.510,url:"https://nstepforward.com/"},
+ {id:"federalsburg",name:"Federalsburg",county:"Caroline County",lon:-75.771,lat:38.695,url:"https://www.carolinehsc.org/general-7"},
+ {id:"langley",name:"Langley Park",county:"Prince George’s County",lon:-76.980,lat:38.989,url:"https://www.wearecasa.org/",zone:"dc"},
+ {id:"druid",name:"Druid Heights/Upton and Westside",county:"Baltimore City",lon:-76.6285,lat:39.3045,url:"https://childfirstauthority.org/",zone:"bal"},
+ {id:"cumberland",name:"South Penn and John Humbird",county:"Allegany County",lon:-78.768,lat:39.628,url:"https://www.enoughallegany.com/"},
+ {id:"essex",name:"Essex",county:"Baltimore County",lon:-76.475,lat:39.310,url:"https://www.canconnects.org/",zone:"bal"},
+ {id:"dundalk",name:"Dundalk",county:"Baltimore County",lon:-76.520,lat:39.2555,url:"https://www.turnaroundinc.org/",zone:"bal"},
+ {id:"sandtown",name:"Sandtown-Winchester/Harlem Park",county:"Baltimore City",lon:-76.6455,lat:39.301,url:"https://www.elev8baltimore.org/",zone:"bal"},
+ {id:"landover",name:"Greater Landover",county:"Prince George’s County",lon:-76.890,lat:38.933,url:"https://www.goodintentionsfoundation.org/enough",zone:"dc"},
+ {id:"mondawmin",name:"Greater Mondawmin",county:"Baltimore City",lon:-76.658,lat:39.314,url:"https://www.greatermondawmin.org/",zone:"bal"},
+ {id:"chestertown",name:"Uptown Chestertown",county:"Kent County",lon:-76.068,lat:39.209,url:"https://www.kentcounty.com/government/boards_and_committees/local_management_board"},
+ {id:"belair",name:"Belair-Edison",county:"Baltimore City",lon:-76.556,lat:39.317,url:"https://www.leaderbreeders.org/",zone:"bal"},
+ {id:"waldorf",name:"Waldorf",county:"Charles County",lon:-76.939,lat:38.624,url:"https://enough.lifestylesofmd.org/"},
+ {id:"curtisbay",name:"Brooklyn and Curtis Bay",county:"Baltimore City",lon:-76.598,lat:39.225,url:"https://www.sbclt.org/",zone:"bal"},
+ {id:"mcelderry",name:"McElderry Park",county:"Baltimore City",lon:-76.569,lat:39.2985,url:"https://www.tendeafamily.org/services",zone:"bal"},
+ {id:"greenmount",name:"Greater Greenmount",county:"Baltimore City",lon:-76.6075,lat:39.317,url:"https://www.centralbaltimore.org/",zone:"bal"},
+ {id:"waverly",name:"Greater Waverly",county:"Baltimore City",lon:-76.6085,lat:39.3335,url:"https://ymaryland.org/",zone:"bal"},
+ {id:"suitland",name:"District Heights and Suitland",county:"Prince George’s County",lon:-76.930,lat:38.855,url:"https://www.ucappgc.org/enough-initiative/",zone:"dc"},
+ {id:"perkins",name:"Perkins Somerset Oldtown",county:"Baltimore City",lon:-76.6025,lat:39.2915,url:"https://usi-inc.org/",zone:"bal"}
+];
+var ORG={cherryhill:"Cherry Hill Strong",parkheights:"Park Heights Renaissance, Inc.",hagerstown:"San Mar Family & Community Services: Bester Community of Hope",riverdale:"Latin American Youth Center (Project ERASE Poverty)",pumphrey:"Anne Arundel County Partnership for Children, Youth, and Families",goldenmile:"Frederick County Division of Youth and Family Services",cambridge:"Moving Dorchester Forward, Inc.",longbranch:"CHEER (Community Health and Empowerment through Education and Research)",mv480:"480 Club",identity:"Identity, Inc.",edgewood:"Boys & Girls Clubs of Harford and Cecil Counties",aberdeen:"New-Service Training Employment Program (N-STEP), Inc.",federalsburg:"Caroline Human Services Council, Inc.",langley:"We Are CASA, Inc.",druid:"Child First Authority",cumberland:"City of Cumberland",essex:"Community Assistance Network, Inc.",dundalk:"Turnaround Inc.",sandtown:"Elev8 Baltimore, Inc.",landover:"Good Intentions Foundation Inc.",mondawmin:"Greater Mondawmin Coordinating Council",chestertown:"Kent County Local Management Board",belair:"Leader Breeders",waldorf:"LifeStyles of Maryland Foundation, Inc.",curtisbay:"South Baltimore Community Land Trust",mcelderry:"Tendea Family, Inc.",greenmount:"The Central Baltimore Partnership, Inc.",waverly:"The Y in Central Maryland",suitland:"United Communities Against Poverty (UCAP)",perkins:"Urban Strategies Inc."};
+var BYID={}; C.forEach(function(c){BYID[c.id]=c;});
+
+/* Maryland outline, [lon,lat], clockwise from the northwest corner. Simplified for a static overview. */
+var MD=[[-79.4876,39.7208],[-75.788,39.7216],[-75.766,39.38],[-75.746,39.0],[-75.70,38.46],[-75.05,38.455],[-75.09,38.33],[-75.15,38.18],[-75.24,38.03],
+[-75.64,37.97],[-75.87,37.92],[-76.05,37.93],[-76.03,38.0],[-75.95,38.12],[-75.97,38.28],[-76.2,38.30],[-76.25,38.45],[-76.28,38.58],[-76.33,38.70],[-76.28,38.80],[-76.37,38.93],[-76.38,39.0],[-76.27,39.04],[-76.19,39.07],[-76.24,39.13],[-76.2,39.25],[-76.13,39.33],[-76.04,39.36],[-76.0,39.41],[-75.97,39.48],[-76.05,39.55],
+[-76.08,39.545],[-76.08,39.47],[-76.10,39.43],[-76.17,39.37],[-76.25,39.35],[-76.33,39.33],[-76.40,39.26],[-76.42,39.21],[-76.50,39.19],[-76.46,39.15],[-76.40,39.10],[-76.43,39.04],[-76.44,38.97],[-76.50,38.90],[-76.53,38.80],[-76.52,38.70],[-76.45,38.55],[-76.41,38.45],[-76.43,38.33],[-76.38,38.25],[-76.34,38.13],[-76.32,38.04],
+[-76.45,38.08],[-76.55,38.14],[-76.65,38.20],[-76.78,38.25],[-76.92,38.30],[-77.00,38.36],[-77.04,38.43],[-77.13,38.50],[-77.16,38.60],[-77.07,38.68],[-77.03,38.71],[-77.0386,38.7916],
+[-76.9094,38.8928],[-77.0409,38.9958],[-77.1198,38.9345],
+[-77.14,38.97],[-77.25,39.00],[-77.34,39.06],[-77.46,39.12],[-77.53,39.20],[-77.55,39.27],[-77.65,39.32],[-77.73,39.32],[-77.74,39.43],[-77.80,39.44],[-77.82,39.52],[-77.82,39.60],[-78.0,39.64],[-78.18,39.70],[-78.40,39.62],[-78.55,39.55],[-78.70,39.58],[-78.75,39.61],[-78.80,39.59],[-78.90,39.52],[-79.05,39.46],[-79.25,39.30],[-79.4877,39.1983]];
+var DC=[[-77.0386,38.7916],[-76.9094,38.8928],[-77.0409,38.9958],[-77.1198,38.9345]];
+
+var COS=Math.cos(39*Math.PI/180);
+var NS="http://www.w3.org/2000/svg";
+function el(tag,attrs,parent){var e=document.createElementNS(NS,tag);for(var k in attrs){e.setAttribute(k,attrs[k]);}if(parent)parent.appendChild(e);return e;}
+function projector(b){return function(lon,lat){return [b.x+(lon-b.lonMin)*COS*b.S, b.y+(b.latMax-lat)*b.S];};}
+function pts(list,P){return list.map(function(p){var q=P(p[0],p[1]);return q[0].toFixed(1)+","+q[1].toFixed(1);}).join(" ");}
+
+/* ---------- MAIN MAP ---------- */
+var MAIN={lonMin:-79.56,latMax:39.80,S:300,x:12,y:10};
+var MW=Math.ceil((79.56-75.0)*COS*MAIN.S+24), MH=Math.ceil((39.80-37.86)*MAIN.S+18);
+var mainP=projector(MAIN);
+var svg=document.getElementById("map-svg");
+svg.setAttribute("viewBox","0 0 "+MW+" "+MH);
+
+el("polygon",{"class":"state",points:pts(MD,mainP)},svg);
+el("polygon",{"class":"dc-shape",points:pts(DC,mainP)},svg);
+
+var zoneLabels=[];
+var allDots=[]; // {c, g, hit, pt, base}
+function makeDot(parent,c,P){
+  var p=P(c.lon,c.lat);
+  var g=el("g",{"class":"dot"+(c.feat?" ft":""),"data-id":c.id,tabindex:0,role:"button","aria-label":c.name+(c.pop?" — "+c.pop.h2:"")},parent);
+  var hit=el("circle",{"class":"hit",cx:p[0],cy:p[1],r:12},g);
+  var pt=el("circle",{"class":"pt",cx:p[0],cy:p[1],r:5},g);
+  var d={c:c,g:g,hit:hit,pt:pt,base:c.feat?9:5};
+  allDots.push(d);
+  d.tight=!!c.zone; bind(g,c);
+  return d;
+}
+// standard dots first, highlights on top
+C.filter(function(c){return !c.feat;}).forEach(function(c){makeDot(svg,c,mainP);});
+C.filter(function(c){return c.feat;}).forEach(function(c){makeDot(svg,c,mainP);});
+
+/* Keep dots legible as the main map scales down on small screens */
+function sizeDots(){
+  var k=MW/Math.max(svg.getBoundingClientRect().width,1);
+  var f=Math.min(Math.max(k*0.62,1),2.6);
+  allDots.forEach(function(d){
+    if(d.fixed) return;
+    var r=d.base*f; d.pt.setAttribute("r",r.toFixed(1)); d.hit.setAttribute("r",(r+(d.tight?1:7)).toFixed(1));
+  });
+  zoneLabels.forEach(function(t){t.setAttribute("font-size",(13*Math.min(Math.max(k*0.7,1),2.4)).toFixed(1));});
+}
+sizeDots(); window.addEventListener("resize",sizeDots);
+
+/* ---------- POP-UPS ---------- */
+var tip=document.getElementById("tip"), hideT=null, current=null, anchor=null, lastShow=0;
+function esc(s){return String(s).replace(/[&<>"]/g,function(m){return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[m];});}
+function link(url,txt){return url?'<a href="'+esc(url)+'" target="_blank" rel="noopener">'+esc(txt)+'</a>':esc(txt);}
+function tipHTML(c){
+  if(c.pop){
+    var p=c.pop;
+    return '<button class="close" aria-label="Close">&times;</button>'+
+    '<div class="head"><h3 class="h1">'+esc(p.h1)+'</h3><p class="h2">'+link(c.url,p.h2)+'</p>'+(p.pov?'<p class="h3">'+esc(p.pov)+'</p>':'')+'</div>'+
+    '<div class="body"><div class="facts"><p><strong>Funds awarded to date:</strong> '+esc(p.funds)+'</p><p><strong>Core strategies:</strong> '+esc(p.strat)+'</p></div><p class="story">'+esc(p.text)+'</p></div>';
+  }
+  return '<button class="close" aria-label="Close">&times;</button>'+link(c.url,c.name);
+}
+function place(){
+  if(!anchor||window.innerWidth<=700) return;
+  var r=anchor.getBoundingClientRect(), w=tip.offsetWidth, h=tip.offsetHeight, vw=window.innerWidth, vh=window.innerHeight, gap=10;
+  var left=r.right+gap;
+  if(left+w>vw-8) left=r.left-w-gap;
+  if(left<8) left=Math.max(8,Math.min(vw-w-8,r.left+r.width/2-w/2));
+  var top=r.top+r.height/2-h/2;
+  top=Math.max(8,Math.min(vh-h-8,top));
+  tip.style.left=left+"px"; tip.style.top=top+"px";
+}
+function setActive(id,on){
+  var nodes=document.querySelectorAll('[data-id="'+id+'"]');
+  for(var i=0;i<nodes.length;i++){nodes[i].classList.toggle("is-active",on);}
+}
+function show(c,a){
+  clearTimeout(hideT);
+  if(current&&current!==c) setActive(current.id,false);
+  current=c; anchor=a; lastShow=Date.now(); setActive(c.id,true);
+  tip.className="tip "+(c.pop?"large":"small");
+  tip.innerHTML=tipHTML(c);
+  tip.style.display="block";
+  tip.style.left="0px"; tip.style.top="0px";
+  place();
+}
+function hide(){
+  if(current) setActive(current.id,false);
+  tip.style.display="none"; current=null; anchor=null;
+}
+function hideSoon(){clearTimeout(hideT);hideT=setTimeout(hide,260);}
+function touchMode(){return window.innerWidth<=700||window.matchMedia("(hover: none)").matches;}
+function bind(node,c){
+  node.addEventListener("mouseenter",function(){if(!touchMode())show(c,node);});
+  node.addEventListener("mouseleave",function(){if(!touchMode())hideSoon();});
+  node.addEventListener("focus",function(){var kb=false;try{kb=node.matches(":focus-visible");}catch(err){kb=true;}if(kb)show(c,node);});
+  node.addEventListener("blur",function(){if(!touchMode())hideSoon();});
+  node.addEventListener("click",function(e){
+    // touch / click: toggle
+    if(current===c&&tip.style.display==="block"&&touchMode()){hide();}else{show(c,node);}
+    e.stopPropagation();
+  });
+  node.addEventListener("keydown",function(e){if(e.key==="Enter"||e.key===" "){e.preventDefault();show(c,node);}});
+}
+tip.addEventListener("mouseenter",function(){clearTimeout(hideT);});
+tip.addEventListener("mouseleave",function(){if(!touchMode())hideSoon();});
+tip.addEventListener("focusin",function(){clearTimeout(hideT);});
+tip.addEventListener("click",function(e){
+  if(e.target.classList&&e.target.classList.contains("close")){hide();}
+  e.stopPropagation();
+});
+document.addEventListener("click",hide);
+document.addEventListener("keydown",function(e){if(e.key==="Escape")hide();});
+window.addEventListener("scroll",hide,{passive:true});
+window.addEventListener("resize",hide);
+
+/* ---------- LIST ---------- */
+var list=document.getElementById("community-list");
+C.slice().sort(function(a,b){return a.name.localeCompare(b.name);}).forEach(function(c){
+  var li=document.createElement("li");
+  li.innerHTML=(c.url?'<a href="'+esc(c.url)+'" target="_blank" rel="noopener">'+esc(c.name)+'</a>':'<span class="nolink">'+esc(c.name)+'</span>')+'<span class="org">'+esc(ORG[c.id]||"")+'</span><span class="county">'+esc(c.county)+'</span>';
+  list.appendChild(li);
+});
+
+/* ---------- HERO DOT PATTERN (brand motif) ---------- */
+(function(){
+  var h=document.getElementById("hero-dots"); var W=1200,H=420; h.setAttribute("viewBox","0 0 "+W+" "+H);
+  var sizes=[1.5,3,5,2,4,1.2,6,2.5];
+  for(var r=0;r<5;r++){for(var c=0;c<9;c++){
+    var s=sizes[(r*7+c*3)%sizes.length];
+    el("circle",{cx:690+c*58,cy:50+r*70,r:s,fill:"#999966",opacity:(0.35+((r+c)%4)*0.15).toFixed(2)},h);
+  }}
+  el("path",{d:"M1050 0 V300 H1200",fill:"none",stroke:"#999966","stroke-width":1.2,opacity:.7},h);
+})();
+})();
+</script>
+</body>
+</html>
